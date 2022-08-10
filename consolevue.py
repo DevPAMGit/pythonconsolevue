@@ -65,13 +65,13 @@ class ConsoleVue:
         :param titre : Le titre à afficher. ;
         """
         self.PREVIOUS_MESSAGE_LENGTH = 0
-        message: str = self.remplir_espace("-") + "\n"
+        message: str = self.remplir_espace("x") + "\n"
 
-        self.PREVIOUS_MESSAGE_LENGTH = len(titre) + 2 + (self.MAXIMUM - (len(titre) + 2))/2
-        message += "|" + self.remplir_espace(" ") + titre + self.remplir_espace(" ") + "|\n"
+        self.PREVIOUS_MESSAGE_LENGTH = len(titre) + 2 + (self.MAXIMUM - (len(titre)))/2
+        message += "x" + self.remplir_espace(" ") + titre + self.remplir_espace(" ") + "x\n"
 
         self.PREVIOUS_MESSAGE_LENGTH = 0
-        message += self.remplir_espace("-") + "\n"
+        message += self.remplir_espace("x") + "\n"
 
         print(message, end="")
 
@@ -81,7 +81,7 @@ class ConsoleVue:
         :param sous_titre : Le sous-titre à afficher. ;
         """
         self.PREVIOUS_MESSAGE_LENGTH = len(sous_titre) + 2 + (self.MAXIMUM - (len(sous_titre) + 2)) / 2
-        message: str = "[" + self.remplir_espace("#") + sous_titre + self.remplir_espace("#") + "]\n"
+        message: str = "[" + self.remplir_espace("#") + " " + sous_titre + " " + self.remplir_espace("#") + "]\n"
 
         self.PREVIOUS_MESSAGE_LENGTH = 0
         message += self.remplir_espace("-") + "\n"
@@ -93,7 +93,7 @@ class ConsoleVue:
         Affiche sur la sortie standard un titre (niveau 2). ;
         :param sous_titre : Le sous-titre à afficher. ;
         """
-        self.PREVIOUS_MESSAGE_LENGTH = len(sous_titre) + 2 + (self.MAXIMUM - (len(sous_titre))) / 2
+        self.PREVIOUS_MESSAGE_LENGTH = len(sous_titre) + (self.MAXIMUM - (len(sous_titre))) / 2
         message: str = self.remplir_espace("_") + sous_titre + self.remplir_espace("_") + "\n"
 
         self.PREVIOUS_MESSAGE_LENGTH = 0
@@ -116,12 +116,15 @@ class ConsoleVue:
         self.PREVIOUS_MESSAGE_LENGTH = len(message) + len(self.ACTION)
         print(self.ACTION + message, end="")
 
-    def erreur(self, message: str):
+    def erreur(self, message: str, exception: (Exception | None)):
         """
         Imprime sur la sortie standard un message d'erreur.;
+        :param exception: L'exception qui pourrait être à l'origine de l'erreur.
         :param message: Le message d'erreur.
         """
         self.__imprimer_resultat__(self.ERREUR, message, ".")
+        if exception is not None:
+            print("Et voici l'exception qui en est la cause :\n" + str(exception))
 
     def succes(self, message: (str | None)):
         """
