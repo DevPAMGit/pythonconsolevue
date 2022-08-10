@@ -1,114 +1,131 @@
-class View:
+class ConsoleVue:
     """
-    Class representing the script view.
+    Class gérant les affichages sur la sortie standard.
     """
 
     def __init__(self, maximum: int):
         """
-        Initialize a new instance of 'View' class.
+        Initialise une nouvelle instance de la classe 'ConsoleVue'. ;
+        :param maximum: La larguer maximum d'une ligne. ;
         """
-        self.MAX: int = maximum
+        self.MAXIMUM = maximum
         self.PREVIOUS_MESSAGE_LENGTH: int = 0
+
+        self.SUCCES = "[OK]"
+        self.ERREUR = "[ERREUR]"
 
         self.INFO: str = "   [INFO] "
         self.ACTION: str = " [ACTION] "
-        self.WARNING: str = "[WARNING] "
 
-        self.SUCCESS: str = "[OK]"
-        self.ERROR: str = "[ERROR]"
-
-    def __set__previous_message_length(self, length: int):
+    def remplir_espace(self, caractere: str) -> str:
         """
-        Set the class parameter 'PREVIOUS_MESSAGE_LENGTH'. ;
-        :param length: The new value of the parameter 'PREVIOUS_MESSAGE_LENGTH'. ;
+        Méthode permettant de remplir l'espace restant d'une ligne avec un caractère désigné. ;
+        :param caractere : Le caractère de complétion. ;
+        :return : Une chaîne de caractère de la longueur de l'espace nécessaire.
         """
-        self.PREVIOUS_MESSAGE_LENGTH = length
-
-    def __get_space__(self, character: str):
-        """
-        Get the space necessary fill with a character. ;
-        :param character: The fill character. ;
-        :return: A string fill with the character in parameter. ;
-        """
-        maximum: int = self.MAX - self.PREVIOUS_MESSAGE_LENGTH
+        maximum: int = self.MAXIMUM - self.PREVIOUS_MESSAGE_LENGTH
         index: int = 0
 
-        result: str = ""
+        resultat: str = ""
 
         while index < maximum:
-            result += character
+            resultat += caractere
             index += 1
 
-        return result
+        return resultat
 
-    def __print_message__(self, message: str, character: str):
+    def __imprimer_resultat__(self, resultat: str, message: (str | None), caractere: str):
         """
-        Print a simple message on the standard output. ;
-        :param message:  The message to print to the standard output. ;
-        :param character: The filling character. ;
+        Affiche sur la sortie standard un résultat. ;
+        :param resultat: Le résultat de l'opération. ;
+        :param message : Le message de du résultat si nécessaire.
+        :param caractere : Le caractere de complétion.
         """
-        self.__set__previous_message_length(len(message))
-        message += self.__get_space__(character)
-        print(message)
+        self.PREVIOUS_MESSAGE_LENGTH = self.PREVIOUS_MESSAGE_LENGTH + len(resultat)
+        a_transmettre = self.remplir_espace(caractere) + resultat + "\n"
 
-    def __print_awaited__(self, message: str):
-        self.__set__previous_message_length(len(message))
+        print(a_transmettre, end = "") if a_transmettre is None \
+            else print(a_transmettre + message + "\n", end="")
+
+    def __imprimer_ligne__(self, info: str, message: str, caractere: str):
+        """
+        Imprime sur la sortie standard une ligne complète. ;
+        :param info: Le type de message. ;
+        :param message : Le message à afficher. ;
+        :param caractere: Le caractère de complétion. ;
+        """
+        self.PREVIOUS_MESSAGE_LENGTH = len(message) + len(info)
+        a_transmettre = info + message + self.remplir_espace(caractere) + "\n"
+
+        print(a_transmettre, end="")
+
+    def titre(self, titre):
+        """
+        Affiche sur la sortie standard un titre. ;
+        :param titre : Le titre à afficher. ;
+        """
+        self.PREVIOUS_MESSAGE_LENGTH = 0
+        message: str = self.remplir_espace("-") + "\n"
+
+        self.PREVIOUS_MESSAGE_LENGTH = len(titre) + 2 + (self.MAXIMUM - (len(titre) + 2))/2
+        message += "|" + self.remplir_espace(" ") + titre + self.remplir_espace(" ") + "|\n"
+
+        self.PREVIOUS_MESSAGE_LENGTH = 0
+        message += self.remplir_espace("-") + "\n"
+
         print(message, end="")
 
-    def __print_result__(self, result: str, message: str | None, character: str):
+    def sous_titre_1(self, sous_titre):
         """
-        Print the result of an awaited message. ;
-        :param result: The success message. ;
-        :param character: The filling character. ;
+        Affiche sur la sortie standard un sous-titre (niveau 1). ;
+        :param sous_titre : Le sous-titre à afficher. ;
         """
-        self.__set__previous_message_length(self.PREVIOUS_MESSAGE_LENGTH + len(result))
-        result_message = self.__get_space__(character) + result
-        if message is not None:
-            result_message += "\n  " + result + " " + message
-        print(result_message)
+        self.PREVIOUS_MESSAGE_LENGTH = len(sous_titre) + 2 + (self.MAXIMUM - (len(sous_titre) + 2)) / 2
+        message: str = "[" + self.remplir_espace("#") + sous_titre + self.remplir_espace("#") + "]\n"
 
-    def title(self, title):
+        self.PREVIOUS_MESSAGE_LENGTH = 0
+        message += self.remplir_espace("-") + "\n"
+
+        print(message, end="")
+
+    def sous_titre_2(self, sous_titre):
         """
-        Print on the standard output the title. ;
-        :param title: The title to print. ;
+        Affiche sur la sortie standard un titre (niveau 2). ;
+        :param sous_titre : Le sous-titre à afficher. ;
         """
-        message: str = ""
+        self.PREVIOUS_MESSAGE_LENGTH = len(sous_titre) + 2 + (self.MAXIMUM - (len(sous_titre))) / 2
+        message: str = self.remplir_espace("_") + sous_titre + self.remplir_espace("_") + "\n"
 
-        self.__set__previous_message_length(0)
-        message += self.__get_space__("-")
+        self.PREVIOUS_MESSAGE_LENGTH = 0
+        message += self.remplir_espace("-") + "\n"
 
-        self.__set__previous_message_length(len(title) + 2 + (self.MAX - (len(title) + 2))/2)
+        print(message, end="")
 
-        message += "\n|" + self.__get_space__(" ") + title + self.__get_space__(" ") + "|\n"
-        self.__set__previous_message_length(0)
-        message += self.__get_space__("-")
-
-        print(message)
-
-    def info(self, info: str, character: str):
+    def info(self, message: str):
         """
-        Print on the standard output an information. ;
-        :param character: The filling character. ;
-        :param info: The information to print on the standard output. ;
+        Imprime sur la sortie standard un message d'information.;
+        :param message: Le message d'information.
         """
-        self.__print_message__(self.INFO + info + " ", character)
+        self.__imprimer_ligne__(self.INFO, message, ".")
 
-    def warning(self, warning: str):
+    def action(self, message: str):
         """
-        Print on the standard output an information. ;
-        :param warning: The warning to print on the standard output. ;
+        Imprime sur la sortie standard un message d'action.;
+        :param message: Le message d'action.
         """
-        self.__print_message__(self.WARNING + warning + " ", ".")
+        self.PREVIOUS_MESSAGE_LENGTH = len(message) + len(self.ACTION)
+        print(self.ACTION + message, end="")
 
-    def action(self, action: str):
+    def erreur(self, message: str):
         """
-        Print on the standard output an action. ;
-        :param action: The error to print on the standard output. ;
+        Imprime sur la sortie standard un message d'erreur.;
+        :param message: Le message d'erreur.
         """
-        self.__print_awaited__(self.ACTION + action)
+        self.__imprimer_resultat__(self.ERREUR, message, ".")
 
-    def success(self):
-        self.__print_result__(self.SUCCESS, None, ".")
-
-    def error(self, message):
-        self.__print_result__(self.ERROR, message, ".")
+    def succes(self, message: (str | None)):
+        """
+        Imprime sur la sortie standard un message de succes.;
+        :param message: Le message d'erreur.
+        """
+        self.__imprimer_resultat__(self.SUCCES, message, ".")
