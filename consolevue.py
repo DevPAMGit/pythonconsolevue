@@ -44,7 +44,7 @@ class ConsoleVue:
         self.PREVIOUS_MESSAGE_LENGTH = self.PREVIOUS_MESSAGE_LENGTH + len(resultat)
         a_transmettre = self.remplir_espace(caractere) + resultat + "\n"
 
-        print(a_transmettre, end = "") if a_transmettre is None \
+        print(a_transmettre, end="") if message is None \
             else print(a_transmettre + message + "\n", end="")
 
     def __imprimer_ligne__(self, info: str, message: str, caractere: str):
