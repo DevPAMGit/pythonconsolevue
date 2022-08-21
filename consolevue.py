@@ -83,8 +83,8 @@ class ConsoleVue:
         self.PREVIOUS_MESSAGE_LENGTH = len(sous_titre) + 2 + (self.MAXIMUM - (len(sous_titre) + 2)) / 2
         message: str = "[" + self.remplir_espace("#") + " " + sous_titre + " " + self.remplir_espace("#") + "]\n"
 
-        self.PREVIOUS_MESSAGE_LENGTH = 0
-        message += self.remplir_espace("-") + "\n"
+        #self.PREVIOUS_MESSAGE_LENGTH = 0
+        # message += self.remplir_espace("-") + "\n"
 
         print(message, end="")
 
@@ -97,7 +97,7 @@ class ConsoleVue:
         message: str = self.remplir_espace("_") + sous_titre + self.remplir_espace("_") + "\n"
 
         self.PREVIOUS_MESSAGE_LENGTH = 0
-        message += self.remplir_espace("-") + "\n"
+        #message += self.remplir_espace("-") + "\n"
 
         print(message, end="")
 
